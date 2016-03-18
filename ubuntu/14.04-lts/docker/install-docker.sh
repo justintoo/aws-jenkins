@@ -1,4 +1,9 @@
 #!/bin/bash -e
+#
+# Bug: Script must be run twice:
+#   1. First phase ends in adding ${USER} to docker group, however this requires a re-login to take affect
+#   2. Second phase re-run after re-logging in
+#
 
 : ${KERNEL_VERSION:="$(uname -r)"}
 : ${GPG_KEY:="58118E89F3A912897C070ADBF76221572C52609D"}
