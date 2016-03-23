@@ -73,14 +73,14 @@ sudo apt-get update && \
     sudo apt-cache policy docker-engine && \
     sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}" && \
     sudo apt-get install --yes docker-engine && \
-        sudo groupadd docker && \
+        sudo groupadd --force docker && \
         sudo adduser --gecos "" --disabled-password --ingroup docker --shell /bin/bash --home /home/docker docker && \
         ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa && \
         sudo mkdir -p /home/docker/.ssh && \
         sudo cp /home/ubuntu/.ssh/id_rsa.pub /home/docker/.ssh/authorized_keys && \
         ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world || exit 1
-STATUS=$?
 
+STATUS=$?
 if [ $STATUS -ne 0 ]; then
   echo "[FATAL] Encountered an error during Docker installation and testing. Terminating..."
   exit 1
