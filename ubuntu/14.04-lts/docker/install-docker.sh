@@ -54,7 +54,7 @@ fi
 echo "[INFO] Adding Docker's Debian repository to '/etc/apt/sources.list.d/docker.list'"
 sudo touch /etc/apt/sources.list.d/docker.list
 
-sudo chown ubuntu:ubuntu /etc/apt/sources.list.d/docker.list
+sudo chown $USER:$USER /etc/apt/sources.list.d/docker.list
 
 # Remove existing entries in docker.list
 sudo cat > /etc/apt/sources.list.d/docker.list <<EOF
@@ -86,7 +86,16 @@ fi
 
 cat <<EOF
 -------------------------------------------------------------------------------
+[INFO] Docker was installed successfully.
+[INFO]
+[INFO] 1. Access docker using the docker user account:
+[INFO]
+[INFO]    $ ssh docker@localhost
+[INFO]    $ docker run hello-world
+[INFO]
+[INFO] 2. Re-login to your $USER account to be added to the docker group.
+[INFO]
+-------------------------------------------------------------------------------
 [INFO] Successfully installed Docker!
 -------------------------------------------------------------------------------
 EOF
-
