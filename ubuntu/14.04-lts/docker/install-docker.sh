@@ -78,7 +78,7 @@ sudo apt-get update && \
         ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa && \
         sudo mkdir -p /home/docker/.ssh && \
         sudo cp /home/ubuntu/.ssh/id_rsa.pub /home/docker/.ssh/authorized_keys && \
-        ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world || exit 1
+        ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world
 if [ $? -ne 0 ]; then
   echo "[FATAL] Encountered an error during Docker installation and testing. Terminating..."
   exit 1
