@@ -69,19 +69,18 @@ sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}"
 # Install Docker
 #------------------------------------------------------------------------------
 sudo apt-get install --yes docker-engine
-sudo gpasswd -a ${USER} docker
+# TOO1 (3/23/2016): Create a new user so we don't have to re-login to be added
+# to the docker group.
+sudo groupadd docker
+sudo adduser --gecos "" --disabled-password --ingroup docker --shell /bin/bash --home /home/docker docker
+ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa
+sudo mkdir -p /home/docker/.ssh
+sudo cp /home/ubuntu/.ssh/id_rsa.pub /home/docker/.ssh/authorized_keys
+ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world
 
 cat <<EOF
 -------------------------------------------------------------------------------
 [INFO] Successfully installed Docker!
-
-Please \`logout\` and re-login to be added to the docker unix group.
-
-Once logged in, test docker:
-
-    $ docker run hello-world
-
-Complete.
 -------------------------------------------------------------------------------
 EOF
 
