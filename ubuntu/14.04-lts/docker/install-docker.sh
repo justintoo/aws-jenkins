@@ -62,30 +62,29 @@ ${DEBIAN_REPOSITORY__DOCKER}
 EOF
 
 #------------------------------------------------------------------------------
-# Install Docker
+# 1. Install Docker
+# 2. Test Docker with `docker` user
+#------------------------------------------------------------------------------
+#    TOO1 (3/23/2016): Create a new user so we don't have to re-login to be
+#                      added to the docker group.
+#------------------------------------------------------------------------------
 #------------------------------------------------------------------------------
 sudo apt-get update && \
     sudo apt-cache policy docker-engine && \
     sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}" && \
-    sudo apt-get install --yes docker-engine || exit 1
+    sudo apt-get install --yes docker-engine && \
+        sudo groupadd docker && \
+        sudo adduser --gecos "" --disabled-password --ingroup docker --shell /bin/bash --home /home/docker docker && \
+        ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa && \
+        sudo mkdir -p /home/docker/.ssh && \
+        sudo cp /home/ubuntu/.ssh/id_rsa.pub /home/docker/.ssh/authorized_keys && \
+        ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world || exit 1
+STATUS=$?
 
-if [ $? -ne 0 ]; then
-  echo "[FATAL] Encountered an error during apt-get commands"
+if [ $STATUS -ne 0 ]; then
+  echo "[FATAL] Encountered an error during Docker installation and testing. Terminating..."
   exit 1
 fi
-
-#------------------------------------------------------------------------------
-# Test Docker with `docker` user
-#------------------------------------------------------------------------------
-# TOO1 (3/23/2016): Create a new user so we don't have to re-login to be added
-#                   to the docker group.
-#------------------------------------------------------------------------------
-sudo groupadd docker
-sudo adduser --gecos "" --disabled-password --ingroup docker --shell /bin/bash --home /home/docker docker
-ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa
-sudo mkdir -p /home/docker/.ssh
-sudo cp /home/ubuntu/.ssh/id_rsa.pub /home/docker/.ssh/authorized_keys
-ssh -oStrictHostKeyChecking=no docker@localhost docker run hello-world
 
 cat <<EOF
 -------------------------------------------------------------------------------
