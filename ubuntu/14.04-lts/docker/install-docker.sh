@@ -61,16 +61,25 @@ sudo cat > /etc/apt/sources.list.d/docker.list <<EOF
 ${DEBIAN_REPOSITORY__DOCKER}
 EOF
 
-sudo apt-get update
-sudo apt-cache policy docker-engine
-sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}"
-
 #------------------------------------------------------------------------------
 # Install Docker
 #------------------------------------------------------------------------------
-sudo apt-get install --yes docker-engine || exit 1
+sudo apt-get update && \
+    sudo apt-cache policy docker-engine && \
+    sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}" && \
+    sudo apt-get install --yes docker-engine || exit 1
+
+if [ $? -ne 0 ]; then
+  echo "[FATAL] Encountered an error during apt-get commands"
+  exit 1
+fi
+
+#------------------------------------------------------------------------------
+# Test Docker with `docker` user
+#------------------------------------------------------------------------------
 # TOO1 (3/23/2016): Create a new user so we don't have to re-login to be added
-# to the docker group.
+#                   to the docker group.
+#------------------------------------------------------------------------------
 sudo groupadd docker
 sudo adduser --gecos "" --disabled-password --ingroup docker --shell /bin/bash --home /home/docker docker
 ssh-keygen -t rsa -N "" -f /home/ubuntu/.ssh/id_rsa
