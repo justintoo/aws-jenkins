@@ -68,7 +68,7 @@ sudo apt-get install --yes "linux-image-extra-${KERNEL_VERSION}"
 #------------------------------------------------------------------------------
 # Install Docker
 #------------------------------------------------------------------------------
-sudo apt-get install --yes docker-engine
+sudo apt-get install --yes docker-engine || exit 1
 # TOO1 (3/23/2016): Create a new user so we don't have to re-login to be added
 # to the docker group.
 sudo groupadd docker
